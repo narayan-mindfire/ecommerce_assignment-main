@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "691740424422",
+    "project_id": "test-2d5bf",
+    "storage_bucket": "test-2d5bf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:691740424422:android:fb7ba079ecee1f0b5a6327",
+        "android_client_info": {
+          "package_name": "com.anonymous.LoginApp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "691740424422-0lqh5fmsc9navf692oagkp5f3rs20hq5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDXLHZHOObK15HECKyycFCW44s_3oDRMwg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "691740424422-0lqh5fmsc9navf692oagkp5f3rs20hq5.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "691740424422-7p8fmlqcapo1vdd3477aaadbtq5a4kth.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.anonymous.LoginApp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
