@@ -23,7 +23,7 @@ const Welcome: FC<WelcomeParams> = ({ navigation }) => {
       await GoogleSignin.hasPlayServices();
       console.log("has play service");
       const userInfo = await GoogleSignin.signIn();
-      console.log("signin function called");
+      // console.log("signin function called");
       console.log("Google Sign-In Success:", userInfo);
       Alert.alert("Success", `Welcome, ${userInfo.user.name}!`);
     } catch (error) {
