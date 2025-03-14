@@ -12,7 +12,11 @@ import { useTheme } from "@react-navigation/native";
 import { SigninParams } from "../../TypesDefined/NavTypes";
 import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
-import { authenticateUser } from "../../redux/slices/authSlice";
+import {
+  authenticateUser,
+  authenticateWithGoogle,
+} from "../../redux/slices/authSlice";
+import { googleSignOut } from "@/src/services/auth/googleSignin";
 const Welcome: React.FC<SigninParams> = ({ navigation }) => {
   const dispatch = useAppDispatch();
   const authState = useSelector((state: RootState) => state.auth);
@@ -27,6 +31,13 @@ const Welcome: React.FC<SigninParams> = ({ navigation }) => {
       console.log(`couldn't sign the user in: ${error}`);
     }
     console.log(`user ${authState.user?.firstName} is stored in redux`);
+  };
+  const handleGoogleSignIn = async () => {
+    try {
+      await dispatch(authenticateWithGoogle());
+    } catch (error) {
+      console.log("Google Sign-In Error:", error);
+    }
   };
   return (
     <View style={styles.container}>
@@ -95,6 +106,7 @@ const Welcome: React.FC<SigninParams> = ({ navigation }) => {
             ,
             { backgroundColor: colors.card },
           ]}
+          onPress={handleGoogleSignIn}
         >
           <Image
             style={styles.logo}
@@ -120,6 +132,10 @@ const Welcome: React.FC<SigninParams> = ({ navigation }) => {
               Continue with Facebook
             </Text>
           </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={googleSignOut}>
+          <Text>Log out</Text>
         </TouchableOpacity>
       </View>
     </View>

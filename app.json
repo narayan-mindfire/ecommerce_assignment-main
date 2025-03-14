@@ -11,7 +11,7 @@
     "ios": {
       "supportsTablet": true,
       "googleServicesFile": "./GoogleService-Info.plist",
-      "bundleIdentifier": "com.anonymous.LoginApp"
+      "bundleIdentifier": "com.demo.ecommerce"
     },
     "android": {
       "adaptiveIcon": {
@@ -19,7 +19,7 @@
         "backgroundColor": "#ffffff"
       },
       "googleServicesFile": "./google-services.json",
-      "package": "com.anonymous.LoginApp"
+      "package": "com.demo.ecommerce"
     },
     "web": {
       "bundler": "metro",

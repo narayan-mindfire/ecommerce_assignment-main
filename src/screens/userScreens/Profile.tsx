@@ -1,21 +1,9 @@
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, StyleSheet, Text, View } from "react-native";
 import React, { FC } from "react";
 import { useTheme } from "@react-navigation/native";
 import { ProfileParams } from "../../TypesDefined/NavTypes";
 import { RootState, useAppSelector } from "../../redux/store";
-import axios from "axios";
 const Profile: FC<ProfileParams> = () => {
-  const fetchPeople = async () => {
-    try {
-      const { data } = await axios.get(
-        "https://api.github.com/users/narayan071"
-      );
-      console.log("User data:", JSON.parse(data));
-    } catch (error) {
-      console.error("Fetch error:", error);
-    }
-  };
-
   const { colors } = useTheme();
   const userData = useAppSelector((state: RootState) => state.auth.user);
   return (
@@ -37,12 +25,6 @@ const Profile: FC<ProfileParams> = () => {
       <Text style={[styles.email, { color: colors.text }]}>
         {userData?.email}
       </Text>
-      <TouchableOpacity
-        style={{ height: 30, width: 60, margin: 20, backgroundColor: "pink" }}
-        onPress={() => fetchPeople()}
-      >
-        <Text>request</Text>
-      </TouchableOpacity>
     </View>
   );
 };

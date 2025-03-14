@@ -1,4 +1,4 @@
-package com.anonymous.LoginApp
+package com.demo.ecommerce
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build
