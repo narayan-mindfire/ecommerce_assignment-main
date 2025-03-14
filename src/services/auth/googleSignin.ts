@@ -9,9 +9,7 @@ export const googleSignIn = async () => {
   try {
     console.log("google sign in called")
     await GoogleSignin.hasPlayServices();
-    console.log("has play service")
     const userInfo = await GoogleSignin.signIn();
-    console.log(`user info fetched : ${userInfo}`)
     return userInfo;
   } catch (error: any) {
     if (error.code === statusCodes.SIGN_IN_CANCELLED) {
