@@ -1584,6 +1584,11 @@
     protobufjs "^7.2.5"
     yargs "^17.7.2"
 
+"@invertase/react-native-apple-authentication@^2.4.0":
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/@invertase/react-native-apple-authentication/-/react-native-apple-authentication-2.4.0.tgz#a474b4b6cd5a5b82365eaef28ba2e5e312cf0d05"
+  integrity sha512-H29XdL/4JmMMA/b7CCEHpSKvyg3LdCJKMydE7ont01IAnDIW//uPuRMdL2RkxJKJtw449c/PY2K9ijWLxQAMIQ==
+
 "@isaacs/cliui@^8.0.2":
   version "8.0.2"
   resolved "https://registry.npmjs.org/@isaacs/cliui/-/cliui-8.0.2.tgz"
@@ -1984,6 +1989,11 @@
   integrity sha512-rDQwjlSgMuF3e2vPT8Kq+1PoqfHyRLTs1yPogGKacXQJMF2C54XUIZu7zDeBOMfWYtjy0pErIIBDnDcirjqhvw==
   dependencies:
     stacktrace-js "^2.0.2"
+
+"@react-native-firebase/messaging@^21.12.0":
+  version "21.12.0"
+  resolved "https://registry.yarnpkg.com/@react-native-firebase/messaging/-/messaging-21.12.0.tgz#09df4facf3544eeb42cc23676ae7c2a68014b005"
+  integrity sha512-KIPuLLptNBryv/upuzW1FLFWv/L/9otSwzJdhkYybV07IG/eeK/4l615UargT9ZyYPSlDjAZC+7yUK2t+cSGNA==
 
 "@react-native-google-signin/google-signin@^13.2.0":
   version "13.2.0"
