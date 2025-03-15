@@ -17,6 +17,7 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/icon.png",
         "backgroundColor": "#ffffff"
+
       },
       "googleServicesFile": "./google-services.json",
       "package": "com.demo.ecommerce"
@@ -32,6 +33,19 @@
       "@react-native-firebase/auth",
       "@react-native-firebase/crashlytics",
       "@react-native-google-signin/google-signin",
+      [
+        "react-native-fbsdk-next",
+        {
+          "appID": "1369486781142656",
+          "clientToken": "a1f796f649f94e2d9ec4166126c837bc",
+          "displayName": "RN SDK Demo",
+          "scheme": "fb1369486781142656",
+          "advertiserIDCollectionEnabled": false,
+          "autoLogAppEventsEnabled": false,
+          "isAutoInitEnabled": true,
+          "iosUserTrackingPermission": "This identifier will be used to deliver personalized ads to you."
+        }
+      ],
       [
         "expo-splash-screen",
         {

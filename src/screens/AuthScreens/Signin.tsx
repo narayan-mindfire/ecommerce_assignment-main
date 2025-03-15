@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { RootState, useAppDispatch } from "../../redux/store";
 import {
   authenticateUser,
+  authenticateWithFacebook,
   authenticateWithGoogle,
 } from "../../redux/slices/authSlice";
 import { googleSignOut } from "@/src/services/auth/googleSignin";
@@ -39,6 +40,15 @@ const Welcome: React.FC<SigninParams> = ({ navigation }) => {
       console.log("Google Sign-In Error:", error);
     }
   };
+
+  const handleFacebookSignIn = async () => {
+    try {
+      await dispatch(authenticateWithFacebook());
+    } catch (error) {
+      console.log("Google Sign-In Error:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar
@@ -121,6 +131,7 @@ const Welcome: React.FC<SigninParams> = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.btn, styles.btnopt, { backgroundColor: colors.card }]}
+          onPress={handleFacebookSignIn}
         >
           <Image
             style={styles.logo}

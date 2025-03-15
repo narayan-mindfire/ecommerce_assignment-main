@@ -1,6 +1,6 @@
 import { GoogleSignin, statusCodes } from "@react-native-google-signin/google-signin";
 import { Alert } from "react-native";
-
+import auth from "@react-native-firebase/auth";
 GoogleSignin.configure({
   webClientId: "691740424422-0lqh5fmsc9navf692oagkp5f3rs20hq5.apps.googleusercontent.com",
 });
@@ -27,6 +27,7 @@ export const googleSignIn = async () => {
 
 export const googleSignOut = async () => {
   try {
+    await auth().signOut()
     await GoogleSignin.signOut();
     console.log("User signed out from Google");
   } catch (error) {
