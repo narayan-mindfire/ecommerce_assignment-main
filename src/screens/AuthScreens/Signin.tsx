@@ -7,46 +7,25 @@ import {
   Image,
   StatusBar,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useTheme } from "@react-navigation/native";
 import { SigninParams } from "../../TypesDefined/NavTypes";
-import { useSelector } from "react-redux";
-import { RootState, useAppDispatch } from "../../redux/store";
-import {
-  authenticateUser,
-  authenticateWithFacebook,
-  authenticateWithGoogle,
-} from "../../redux/slices/authSlice";
+import { useAuth } from "@/src/hooks/useAuth";
 import { googleSignOut } from "@/src/services/auth/googleSignin";
 const Welcome: React.FC<SigninParams> = ({ navigation }) => {
-  const dispatch = useAppDispatch();
-  const authState = useSelector((state: RootState) => state.auth);
   const { dark, colors } = useTheme();
+  const { user, loginWithPassword, loginWithGoogle, loginWithFacebook } =
+    useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const signInHelpr = async () => {
-    console.log("setting things in diapatch - signing");
+  const handleSignIn = async () => {
+    console.log("Attempting to sign in...");
     try {
-      await dispatch(authenticateUser({ username, password }));
+      await loginWithPassword(username, password);
     } catch (error) {
-      console.log(`couldn't sign the user in: ${error}`);
+      console.log(`Couldn't sign the user in: ${error}`);
     }
-    console.log(`user ${authState.user?.firstName} is stored in redux`);
-  };
-  const handleGoogleSignIn = async () => {
-    try {
-      await dispatch(authenticateWithGoogle());
-    } catch (error) {
-      console.log("Google Sign-In Error:", error);
-    }
-  };
-
-  const handleFacebookSignIn = async () => {
-    try {
-      await dispatch(authenticateWithFacebook());
-    } catch (error) {
-      console.log("Google Sign-In Error:", error);
-    }
+    console.log(`User ${user?.firstName} is stored in Redux`);
   };
 
   return (
@@ -82,7 +61,7 @@ const Welcome: React.FC<SigninParams> = ({ navigation }) => {
             styles.btncnt,
             { backgroundColor: colors.primary },
           ]}
-          onPress={() => signInHelpr()}
+          onPress={() => handleSignIn()}
         >
           <Text style={[styles.btntxtcnt]}>Continue</Text>
         </TouchableOpacity>
@@ -116,7 +95,7 @@ const Welcome: React.FC<SigninParams> = ({ navigation }) => {
             ,
             { backgroundColor: colors.card },
           ]}
-          onPress={handleGoogleSignIn}
+          onPress={loginWithGoogle}
         >
           <Image
             style={styles.logo}
@@ -131,7 +110,7 @@ const Welcome: React.FC<SigninParams> = ({ navigation }) => {
         </TouchableOpacity>
         <TouchableOpacity
           style={[styles.btn, styles.btnopt, { backgroundColor: colors.card }]}
-          onPress={handleFacebookSignIn}
+          onPress={loginWithFacebook}
         >
           <Image
             style={styles.logo}

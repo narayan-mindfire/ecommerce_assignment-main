@@ -10,19 +10,20 @@ import { Linking } from "react-native";
 import { useTheme } from "@react-navigation/native";
 import SettingPage from "../screens/SettingPage";
 import Homepage from "../screens/Homepage";
-import { useAppDispatch, useAppSelector, RootState } from "../redux/store";
-import { resetState } from "../redux/middlewares/resetMiddleware";
+import { useAppSelector, RootState } from "../redux/store";
 import Wishlist from "../screens/Wishlist";
+import { useAuth } from "../hooks/useAuth";
+
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
   const { colors } = useTheme();
   const user = useAppSelector((state: RootState) => state.auth.user);
+  const { logout } = useAuth();
   const visitProfile = () => {
     console.log(user);
     props.navigation.navigate("Profile");
   };
-  const dispatch = useAppDispatch();
   return (
     <View style={styles.container}>
       <DrawerContentScrollView
@@ -43,9 +44,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
             style={{ backgroundColor: colors.card, borderRadius: 20 }}
             label="LogOut"
             labelStyle={{ color: "red", fontWeight: "bold" }}
-            onPress={() => {
-              dispatch(resetState());
-            }}
+            onPress={logout}
           />
           <DrawerItem
             label="Help"
