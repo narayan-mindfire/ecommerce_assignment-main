@@ -1,7 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
-import { RootState, AppDispatch } from "../redux/store"
+import { RootState, AppDispatch, persistor } from "../redux/store"
 import { authenticateUser, authenticateWithGoogle, authenticateWithFacebook, logoutUser } from "../redux/slices/authSlice";
-import { resetState } from "../redux/middlewares/resetMiddleware";
+import { productPersistConfig } from "../redux/reducer";
+import { purgeStoredState } from "redux-persist";
 
 export const useAuth = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -19,9 +20,13 @@ export const useAuth = () => {
     dispatch(authenticateWithFacebook());
   };
 
-  const logout = () => {
+  const logout = async () => {
     console.log("logging out user")
-    dispatch(resetState());
+    dispatch(logoutUser());
+            await persistor.purge();
+            purgeStoredState(productPersistConfig).then(() => {
+                console.log('Purge completed');
+              }); 
   };
 
   return {

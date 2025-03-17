@@ -1,8 +1,7 @@
-import { configureStore, Middleware } from "@reduxjs/toolkit";
+import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 import { persistStore } from "redux-persist";
 import rootReducer from "./reducer";
-import { resetMiddleware } from "./middlewares/resetMiddleware";
 import {apiSlice} from "./slices/apiSlice"
 import { setupListeners } from '@reduxjs/toolkit/query'
 
@@ -11,7 +10,7 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }).concat(apiSlice.middleware, resetMiddleware),
+    }).concat(apiSlice.middleware),
 });
 
 setupListeners(store.dispatch)
