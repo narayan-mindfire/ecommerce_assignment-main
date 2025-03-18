@@ -1,7 +1,8 @@
 import { PermissionsAndroid } from "react-native";
 import { useEffect } from "react";
 import messaging from "@react-native-firebase/messaging";
-import notifee from "@notifee/react-native";
+import notifee, { EventType } from "@notifee/react-native";
+import { navigate } from "../navigation/navigationService";
 
 const requestUserPermission = async () => {
   const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
@@ -27,8 +28,7 @@ const onMessageReceived = async (remoteMessage : any) => {
   const channelId = await notifee.createChannel({
     id: "default",
     name: "Default Channel",
-  });
-
+  });   
   await notifee.displayNotification({
     title: remoteMessage.notification?.title || "New Notification",
     body: remoteMessage.notification?.body || "You have a new message",
@@ -46,6 +46,19 @@ export const useNotification = () => {
     requestUserPermission();
     getToken();
     const unsubscribe = messaging().onMessage(onMessageReceived);
-    return () => unsubscribe(); 
-  }, []);
+    const unsubscribe2 = notifee.onForegroundEvent(({ type, detail }) => {
+      switch (type) {
+        case EventType.DISMISSED:
+          console.log('User dismissed notification', detail.notification);
+          break;
+          case EventType.PRESS:
+            navigate("Welcome")
+            console.log('User pressed notification', detail.notification);
+            break;
+          }
+        });
+        return () =>{
+          unsubscribe2()
+          unsubscribe()}; 
+      }, []);
 };

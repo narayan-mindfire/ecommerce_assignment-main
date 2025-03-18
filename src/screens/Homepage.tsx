@@ -127,18 +127,7 @@ export default function Home() {
             <FlatList
               data={products.slice(0, 10)}
               horizontal={true}
-              renderItem={({ item }) => (
-                <ProductCard
-                  name={item.title ? item.title : "default"}
-                  price={item.price ? item.price : 0}
-                  image={
-                    item.images
-                      ? item.images[0]
-                      : "https://assets.dummyjson.com/public/qr-code.png"
-                  }
-                  id={item.id}
-                />
-              )}
+              renderItem={({ item }) => <ProductCard id={item.id} />}
               ItemSeparatorComponent={() => {
                 return (
                   <View
@@ -174,18 +163,7 @@ export default function Home() {
               nestedScrollEnabled={true}
               data={products.slice(14, 28)}
               horizontal={true}
-              renderItem={({ item }) => (
-                <ProductCard
-                  name={item.title ? item.title : "default"}
-                  price={item.price ? item.price : 0}
-                  image={
-                    item.images
-                      ? item.images[0]
-                      : "https://assets.dummyjson.com/public/qr-code.png"
-                  }
-                  id={item.id}
-                />
-              )}
+              renderItem={({ item }) => <ProductCard id={item.id} />}
               ItemSeparatorComponent={() => {
                 return (
                   <View

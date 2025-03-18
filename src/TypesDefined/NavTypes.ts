@@ -8,6 +8,7 @@ export type RootStackParamList = {
     Signup: undefined,
     DrawNav : undefined,
     Profile: undefined
+    ProductDetails: { id: number },
 }
 export type DrawerParamList = {
   DashBoard: undefined;

@@ -9,6 +9,8 @@ import DrawNav from "./Drawer";
 import Profile from "../screens/userScreens/Profile";
 import { RootState, useAppSelector } from "../redux/store";
 import useAppTheme from "../hooks/useAppTheme";
+import ProductDetails from "../screens/ProductScreens/ProductDetails";
+import { navigationRef } from "./navigationService";
 const RootNav = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack: FC = () => {
@@ -18,7 +20,7 @@ const RootStack: FC = () => {
     console.log(`token: ${token}`);
   }, [token]);
   return (
-    <NavigationContainer theme={appTheme}>
+    <NavigationContainer theme={appTheme} ref={navigationRef}>
       <RootNav.Navigator screenOptions={{ headerShown: false }}>
         {!token ? (
           <>
@@ -30,6 +32,7 @@ const RootStack: FC = () => {
           <>
             <RootNav.Screen name="DrawNav" component={DrawNav} />
             <RootNav.Screen name="Profile" component={Profile} />
+            <RootNav.Screen name="ProductDetails" component={ProductDetails} />
           </>
         )}
       </RootNav.Navigator>
