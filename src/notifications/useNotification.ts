@@ -41,24 +41,32 @@ const onMessageReceived = async (remoteMessage : any) => {
   });
 };
 
+const handleNavigationOnPress = ({ type, detail } : any) => {
+  switch (type) {
+    case EventType.DISMISSED:
+      console.log('User dismissed notification', detail.notification);
+      break;
+      case EventType.PRESS:
+        navigate("Welcome")
+        console.log('User pressed notification', detail.notification);
+        break;
+      }
+    }
+
+    const handleBackgroundNotification = async (remoteMessage : any) => {
+        console.log("background message received")
+        navigate("Explore");
+    }
+
 export const useNotification = () => {
   useEffect(() => {
     requestUserPermission();
     getToken();
     const unsubscribe = messaging().onMessage(onMessageReceived);
-    const unsubscribe2 = notifee.onForegroundEvent(({ type, detail }) => {
-      switch (type) {
-        case EventType.DISMISSED:
-          console.log('User dismissed notification', detail.notification);
-          break;
-          case EventType.PRESS:
-            navigate("Welcome")
-            console.log('User pressed notification', detail.notification);
-            break;
-          }
-        });
-        return () =>{
-          unsubscribe2()
-          unsubscribe()}; 
-      }, []);
+    const unsubscribe2 = notifee.onForegroundEvent(handleNavigationOnPress);
+    const unsubscribebackgroudn = messaging().onNotificationOpenedApp(handleBackgroundNotification)
+    return () =>{
+      unsubscribe2()
+      unsubscribe()}; 
+    }, []);
 };
