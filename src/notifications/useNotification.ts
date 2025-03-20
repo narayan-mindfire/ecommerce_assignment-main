@@ -1,16 +1,16 @@
 import { Alert, PermissionsAndroid } from "react-native";
 import { useEffect } from "react";
 import messaging from "@react-native-firebase/messaging";
-import notifee, { EventType } from "@notifee/react-native";
+import notifee, { EventType, AuthorizationStatus} from "@notifee/react-native";
 import { navigate } from "../navigation/navigationService";
 import { RootState, useAppSelector } from "../redux/store";
 
 const requestUserPermission = async () => {
-  const granted = await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
-  if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-    console.log("Notification permission granted");
-  } else {
-    console.log("Notification permission revoked");
+  const granted = await notifee.requestPermission();
+  if (granted.authorizationStatus === AuthorizationStatus.DENIED) {
+    console.log('User denied permissions request');
+  } else if (granted.authorizationStatus === AuthorizationStatus.AUTHORIZED) {
+    console.log('User granted permissions request');
   }
 };
 
@@ -24,9 +24,6 @@ const getToken = async () => {
 };
 
 const onMessageReceived = async (remoteMessage: any) => {
-  console.log("Foreground Message Received:", remoteMessage);
-  await notifee.requestPermission();
-
   const channelId = await notifee.createChannel({
     id: "default",
     name: "Default Channel",
@@ -44,66 +41,78 @@ const onMessageReceived = async (remoteMessage: any) => {
     },
   });
 };
+interface payloadType {
+  screen : string,
+  productId: number
+}
+const handlePayloadNavigation = (payload :payloadType ) => {
+  if(payload){
+    if(payload.screen === "ProductDetails"){
+      try {
+        console.log(payload.screen)
+        console.log(payload.productId, typeof(payload.productId))
+        navigate(payload.screen,{id: payload.productId})
+      } catch (error) {
+        console.log("cannot navigate to screen: ", screen)
+      } 
+    }
+    else if(payload.screen === "Settings"){
+      try {
+        navigate(payload.screen)
+      } catch (error) {
+        console.log("cannot navigate to screen: ", screen)
+      } 
+    }
+    else if(payload.screen === "Profile"){
+      try {
+        navigate(payload.screen)
+      } catch (error) {
+        console.log("cannot navigate to screen: ", screen)
+      } 
+    }
+  }
+  else navigate("DashBoard")
+}
 
-
-const handleNavigationOnPress = ({ type, detail }: any, token: string | null) => {
+const handleNavigationOnPress = ({ type, detail }: any, token: string | undefined) => {
+  console.log("running handlenavigation on press function")
   switch (type) {
     case EventType.DISMISSED:
       console.log("User dismissed notification", detail.notification);
       break;
-
     case EventType.PRESS:
-      const screen = detail.notification?.data?.screen || detail.data?.screen;
-      const productId = detail.notification?.data?.productId;
-      console.log("received productId : ", productId)
-      console.log(".")
-      console.log(".")
-      console.log(".")
-      console.log(".")
-      console.log(detail);
-      if (token === null) {
-        console.log("token is null")
-        console.log("sending alert ")
-        alert("hey login required")
+      console.log("notification pressed")
+      if (token === undefined) {
+        console.log("token is undefined")
+        setTimeout(() => {
+          Alert.alert("Login Required", "You need to log in first to access this page.");
+        }, 1000); 
         return;
       }
-      console.log("the screen navigating to: ", screen)
-      if(screen){
-        try {
-          navigate(screen)
-        } catch (error) {
-          console.log("cannot navigate to screen: ", screen)
-        }
+      let payload = undefined
+      if(detail.notification.data.payload){
+          payload = JSON.parse(detail.notification?.data?.payload);
       }
-
+      handlePayloadNavigation(payload)
   }
 };
 
-const handleBackgroundNotification = async (notification: any, token: string | null) => {
-  console.log("Background message received:", notification);
-
-  const screen = notification?.data?.screen;
-  const productId = notification?.data?.productId;  
-  console.log("received productId : ", productId)
-  if(token) console.log("token is there")
+const handleBackgroundNotification = async (notification: any, token: string | undefined) => {
+  let payload = undefined
   if (!token) {
-    Alert.alert("Login Required", "You need to login first to access this page.");
+    setTimeout(() => {
+      Alert.alert("Login Required", "You need to log in first to access this page.");
+    }, 1000); 
     return;
   }
-
-  if(screen){
-    try {
-      navigate(screen)
-    } catch (error) {
-      console.log("cannot navigate to screen: ", screen)
-    }
+  if(notification.data.payload){
+      payload = JSON.parse(notification?.data?.payload);
   }
+  handlePayloadNavigation(payload)
 };
 
 export const useNotification = () => {
-  // const token = useAppSelector((store: RootState) => store.auth.token);
-  // console.log("auth token: ", token)
-  const token = "narayan"
+  const token = useAppSelector((store: RootState) => store.auth.token);
   useEffect(() => {
     requestUserPermission();
     getToken();

@@ -11,11 +11,13 @@ import { RootState, useAppSelector } from "../redux/store";
 import useAppTheme from "../hooks/useAppTheme";
 import ProductDetails from "../screens/ProductScreens/ProductDetails";
 import { navigationRef } from "./navigationService";
+import { useNotification } from "../notifications/useNotification";
 const RootNav = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack: FC = () => {
   const appTheme = useAppTheme();
   const token = useAppSelector((store: RootState) => store.auth.token);
+  useNotification();
   useEffect(() => {
     console.log(`token: ${token}`);
   }, [token]);

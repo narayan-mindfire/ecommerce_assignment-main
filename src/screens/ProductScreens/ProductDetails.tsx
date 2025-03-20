@@ -9,7 +9,6 @@ interface ProductDetailsProps {
 export default function ProductDetails({ route }: ProductDetailsProps) {
   const { id } = route.params;
   const { colors } = useTheme();
-
   const product = useAppSelector((state: RootState) =>
     state.product.products.find((p) => p.id === id)
   );
@@ -25,6 +24,7 @@ export default function ProductDetails({ route }: ProductDetailsProps) {
         style={styles.image}
         resizeMode="contain"
       />
+      <Text style={{ color: colors.text }}>Product id: {id}</Text>
       <View style={styles.detailsContainer}>
         <Text style={[styles.title, { color: colors.text }]}>
           {product.title}
