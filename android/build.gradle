@@ -22,8 +22,10 @@ buildscript {
         classpath('org.jetbrains.kotlin:kotlin-gradle-plugin')
     }
 }
-
+apply plugin: 'com.android.application'
 apply plugin: "com.facebook.react.rootproject"
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.google.firebase.crashlytics'
 
 allprojects {
     repositories {

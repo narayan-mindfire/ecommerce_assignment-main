@@ -1,6 +1,8 @@
 import { useTheme } from "@react-navigation/native";
 import { StyleSheet, View, Image, Text, ScrollView } from "react-native";
 import { RootState, useAppSelector } from "../../redux/store";
+import analytics from "@react-native-firebase/analytics";
+import { useEffect } from "react";
 
 interface ProductDetailsProps {
   route: { params: { id: number } };
@@ -12,7 +14,18 @@ export default function ProductDetails({ route }: ProductDetailsProps) {
   const product = useAppSelector((state: RootState) =>
     state.product.products.find((p) => p.id === id)
   );
-
+  useEffect(() => {
+    if (!product) return;
+    const sendSelectAnalytics = async (title: string, id: number) => {
+      await analytics().logSelectContent({
+        content_type: title,
+        item_id: id.toString(),
+      });
+    };
+    if (product?.title && product?.id) {
+      sendSelectAnalytics(product?.title, product?.id);
+    }
+  }, [product]);
   if (!product) return <Text style={styles.errorText}>Product not found</Text>;
 
   return (

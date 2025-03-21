@@ -12,6 +12,7 @@ import useAppTheme from "../hooks/useAppTheme";
 import ProductDetails from "../screens/ProductScreens/ProductDetails";
 import { navigationRef } from "./navigationService";
 import { useNotification } from "../notifications/useNotification";
+import { firebase } from "@react-native-firebase/auth";
 const RootNav = createNativeStackNavigator<RootStackParamList>();
 
 const RootStack: FC = () => {

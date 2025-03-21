@@ -1,15 +1,15 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { changeTheme } from "../redux/slices/ThemeSlice";
 import { RootState, AppDispatch } from "../redux/store";
-
 const SettingPage = () => {
   const navigation = useNavigation();
   const { colors } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const themeState = useSelector((state: RootState) => state.theme);
+
   return (
     <View style={styles.container}>
       <Text style={{ color: colors.text }}>Setting Page</Text>
