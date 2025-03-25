@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import {
   NavigationContainer,
@@ -15,8 +15,20 @@ import useAppTheme from "../hooks/useAppTheme";
 import ProductDetails from "../screens/ProductScreens/ProductDetails";
 import { useNotification } from "../notifications/useNotification";
 import analytics from "@react-native-firebase/analytics";
+import { Alert, Linking } from "react-native";
 
 const RootNav = createNativeStackNavigator<RootStackParamList>();
+
+const linking = {
+  prefixes: ["myapp://"],
+  config: {
+    screens: {
+      Home: "home",
+      ProductDetails: "product/:id",
+      SignIn: "signin",
+    },
+  },
+};
 
 const RootStack: FC = () => {
   const routeNameRef = useRef<string | null>(null);
@@ -26,9 +38,49 @@ const RootStack: FC = () => {
   const token = useAppSelector((store: RootState) => store.auth.token);
 
   useNotification();
+  const [pendingDeepLink, setPendingDeepLink] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleDeepLinks = (event: { url: string }) => {
+      const { url } = event;
+      console.log("URL Provided: ", url);
+      try {
+        const path = url.replace(/^myapp:\/\//, "");
+        console.log("Extracted path: ", path);
+
+        const pathParts = path.split("/");
+        const productId = parseInt(pathParts[1] ?? "1", 10);
+
+        console.log("Extracted product ID: ", productId);
+
+        if (!token) {
+          setPendingDeepLink(`product/${productId}`);
+          Alert.alert("Login Needed!", "Please login first.");
+        } else {
+          console.log("Navigating to product with ID: ", productId);
+          navigationRef.current?.navigate("ProductDetails", { id: productId });
+        }
+      } catch (error) {
+        console.error("Error parsing URL:", error);
+      }
+    };
+
+    const subscription = Linking.addEventListener("url", handleDeepLinks);
+
+    return () => {
+      subscription.remove();
+    };
+  }, [token]);
 
   useEffect(() => {
     console.log(`token: ${token}`);
+    if (token && pendingDeepLink) {
+      console.log("Redirecting to pending deep link:", pendingDeepLink);
+      navigationRef.current?.navigate("ProductDetails", {
+        id: parseInt(pendingDeepLink.split("/")[1], 10),
+      });
+      setPendingDeepLink(null);
+    }
   }, [token]);
 
   return (
