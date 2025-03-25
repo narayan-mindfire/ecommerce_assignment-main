@@ -1,7 +1,7 @@
 import { Alert, PermissionsAndroid } from "react-native";
 import { useEffect } from "react";
 import messaging from "@react-native-firebase/messaging";
-import notifee, { EventType, AuthorizationStatus} from "@notifee/react-native";
+import notifee, { EventType, AuthorizationStatus, AndroidImportance} from "@notifee/react-native";
 import { navigate } from "../navigation/navigationService";
 import { RootState, useAppSelector } from "../redux/store";
 
@@ -25,8 +25,12 @@ const getToken = async () => {
 
 const onMessageReceived = async (remoteMessage: any) => {
   const channelId = await notifee.createChannel({
-    id: "default",
-    name: "Default Channel",
+    id: 'default', 
+    name: 'Default Channel',
+    importance: AndroidImportance.HIGH,
+    sound: 'default',
+    vibration: true, 
+    badge: true, 
   });
 
   await notifee.displayNotification({
@@ -37,7 +41,7 @@ const onMessageReceived = async (remoteMessage: any) => {
       channelId,
       pressAction: {
         id: "default",
-      },
+      }
     },
   });
 };

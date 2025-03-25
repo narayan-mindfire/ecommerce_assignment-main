@@ -16,7 +16,7 @@ import ProductDetails from "../screens/ProductScreens/ProductDetails";
 import { useNotification } from "../notifications/useNotification";
 import analytics from "@react-native-firebase/analytics";
 import { Alert, Linking } from "react-native";
-
+import { firebase } from "@react-native-firebase/auth";
 const RootNav = createNativeStackNavigator<RootStackParamList>();
 
 const linking = {

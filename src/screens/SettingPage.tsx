@@ -1,11 +1,10 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigation, useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { changeTheme } from "../redux/slices/ThemeSlice";
 import { RootState, AppDispatch } from "../redux/store";
 import api from "../axios/try";
-
 const SettingPage = () => {
   const navigation = useNavigation();
   const { colors } = useTheme();
