@@ -4,12 +4,20 @@ import { useNavigation, useTheme } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import { changeTheme } from "../redux/slices/ThemeSlice";
 import { RootState, AppDispatch } from "../redux/store";
+import api from "../axios/try";
 const SettingPage = () => {
   const navigation = useNavigation();
   const { colors } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const themeState = useSelector((state: RootState) => state.theme);
-
+  const fetchProducts = async () => {
+    try {
+      const response = await api.get("/wrong");
+      console.log("Products:", response.data);
+    } catch (error) {
+      console.error("API call failed:", error);
+    }
+  };
   return (
     <View style={styles.container}>
       <Text style={{ color: colors.text }}>Setting Page</Text>
@@ -46,6 +54,9 @@ const SettingPage = () => {
         <Text style={styles.btntxt}>
           Auto Mode: {themeState.mode === "auto" ? "true" : "false"}
         </Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.btn} onPress={fetchProducts}>
+        <Text style={styles.btntxt}>crash app</Text>
       </TouchableOpacity>
     </View>
   );
