@@ -1,14 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
   FlatList,
   SafeAreaView,
   StatusBar,
-  ScrollView,
   TouchableOpacity,
   Image,
   StyleSheet,
+  Animated,
+  NativeSyntheticEvent,
+  NativeScrollEvent,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
@@ -27,6 +29,53 @@ export default function Home() {
     dispatch(fetchProducts());
   }, [dispatch]);
 
+  const lastScrollY = useRef(0);
+  const direction = useRef<"up" | "down">("down");
+
+  const sbPos = useRef(new Animated.Value(0)).current;
+
+  const scrollVal = useState(new Animated.Value(0))[0];
+
+  const opacity = scrollVal.interpolate({
+    inputRange: [0, 150],
+    outputRange: [1, 0],
+    extrapolate: "clamp",
+  });
+
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const currentScrollY = event.nativeEvent.contentOffset.y;
+    if (currentScrollY === 0) {
+      direction.current = "down";
+      Animated.timing(sbPos, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    } else if (
+      currentScrollY > lastScrollY.current &&
+      direction.current !== "up"
+    ) {
+      direction.current = "up";
+      Animated.timing(sbPos, {
+        toValue: -60,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    } else if (
+      currentScrollY < lastScrollY.current &&
+      direction.current !== "down"
+    ) {
+      direction.current = "down";
+      Animated.timing(sbPos, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }).start();
+    }
+
+    lastScrollY.current = currentScrollY;
+  };
+
   return loading ? (
     <SafeAreaView>
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -34,17 +83,29 @@ export default function Home() {
       </View>
     </SafeAreaView>
   ) : (
-    <SafeAreaView>
+    <SafeAreaView style={{ flex: 1, zIndex: -10 }}>
       <StatusBar
         backgroundColor={colors.background}
         barStyle={dark ? "light-content" : "dark-content"}
       />
-      <ScrollView>
+      <Animated.View
+        style={[
+          styles.searchBarContainer,
+          { transform: [{ translateY: sbPos }] },
+        ]}
+      >
+        <SearchBar height={40} width={342} />
+      </Animated.View>
+
+      <Animated.ScrollView
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollVal } } }],
+          { useNativeDriver: true, listener: handleScroll }
+        )}
+        scrollEventThrottle={16}
+      >
         <View style={styles.container}>
-          <View style={{ width: "100%", alignItems: "center" }}>
-            <SearchBar height={40} width={342} />
-          </View>
-          <View style={styles.catBox}>
+          <Animated.View style={[styles.catBox, { opacity }]}>
             <View
               style={{ flexDirection: "row", justifyContent: "space-between" }}
             >
@@ -104,7 +165,7 @@ export default function Home() {
                 </Text>
               </View>
             </View>
-          </View>
+          </Animated.View>
           <View style={styles.topList}>
             <View
               style={{
@@ -176,8 +237,44 @@ export default function Home() {
               }}
             />
           </View>
+          <View style={[styles.newList, { marginBottom: 15 }]}>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                marginTop: 24,
+              }}
+            >
+              <Text style={[styles.heading, { color: colors.primary }]}>
+                New In
+              </Text>
+              <TouchableOpacity>
+                <Text
+                  style={{ fontSize: 16, paddingRight: 3, color: colors.text }}
+                >
+                  See All
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <FlatList
+              nestedScrollEnabled={true}
+              data={products.slice(14, 28)}
+              horizontal={true}
+              renderItem={({ item }) => <ProductCard id={item.id} />}
+              ItemSeparatorComponent={() => {
+                return (
+                  <View
+                    style={{
+                      height: "100%",
+                      width: 10,
+                    }}
+                  />
+                );
+              }}
+            />
+          </View>
         </View>
-      </ScrollView>
+      </Animated.ScrollView>
     </SafeAreaView>
   );
 }
@@ -187,8 +284,10 @@ const styles = StyleSheet.create({
     paddingTop: 13,
     justifyContent: "center",
     marginBottom: 35,
+    zIndex: -30,
   },
   catBox: {
+    paddingTop: 46,
     paddingHorizontal: 24,
     marginTop: 24,
     height: 116,
@@ -230,5 +329,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     width: "100%",
     height: 300,
+  },
+  searchBarContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10, // Bring it to the front
+    paddingVertical: 10,
+    alignItems: "center",
   },
 });

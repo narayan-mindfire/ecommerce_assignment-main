@@ -13,6 +13,7 @@ export type RootStackParamList = {
 export type DrawerParamList = {
   DashBoard: undefined;
   Settings: undefined;
+  Animate: undefined;
 };
 export type WelcomeParams = NativeStackScreenProps<RootStackParamList, 'Welcome'>
 export type ExploreParams = NativeStackScreenProps<RootStackParamList, 'Explore'>

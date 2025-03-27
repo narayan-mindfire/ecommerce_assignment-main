@@ -13,6 +13,8 @@ import Homepage from "../screens/Homepage";
 import { useAppSelector, RootState } from "../redux/store";
 import Wishlist from "../screens/Wishlist";
 import { useAuth } from "../hooks/useAuth";
+import Animate from "../screens/Animate";
+import AllProducts from "../screens/AllProducts";
 
 const Drawer = createDrawerNavigator();
 
@@ -81,6 +83,11 @@ const MyDrawer = () => {
         component={Homepage}
       />
       <Drawer.Screen
+        name="All Products"
+        options={{ title: "AllProducts" }}
+        component={AllProducts}
+      />
+      <Drawer.Screen
         name="Settings"
         options={{ title: "Settings" }}
         component={SettingPage}
@@ -89,6 +96,11 @@ const MyDrawer = () => {
         name="Wishlist"
         options={{ title: "Wishlist" }}
         component={Wishlist}
+      />
+      <Drawer.Screen
+        name="Animate"
+        options={{ title: "Animate" }}
+        component={Animate}
       />
     </Drawer.Navigator>
   );

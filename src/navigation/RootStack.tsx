@@ -77,7 +77,7 @@ const RootStack: FC = () => {
     if (token && pendingDeepLink) {
       console.log("Redirecting to pending deep link:", pendingDeepLink);
       navigationRef.current?.navigate("ProductDetails", {
-        id: parseInt(pendingDeepLink.split("/")[1], 10),
+        id: parseInt(pendingDeepLink.split("/")[1]),
       });
       setPendingDeepLink(null);
     }
