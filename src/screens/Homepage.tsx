@@ -26,7 +26,7 @@ export default function Home() {
   const { colors, dark } = useTheme();
   useEffect(() => {
     dispatch(fetchProducts());
-  }, [dispatch]);
+  }, []);
 
   const lastScroll = useRef(0);
   const sbPos = useRef(new Animated.Value(0)).current;
@@ -36,30 +36,27 @@ export default function Home() {
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
+
+  const animateSearchBar = (value: number, duration = 200) => {
+    Animated.timing(sbPos, {
+      toValue: value,
+      duration,
+      useNativeDriver: true,
+    }).start();
+  };
+
   // this is going to run whenever a scroll is detected
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
     const currentScroll = event.nativeEvent.contentOffset.y;
     if (!currentScroll) {
       // currently on top
-      Animated.timing(sbPos, {
-        toValue: 0,
-        duration: 0,
-        useNativeDriver: true,
-      }).start();
+      animateSearchBar(0);
     } else if (currentScroll > lastScroll.current) {
       // moving down hide the search bar!
-      Animated.timing(sbPos, {
-        toValue: -60,
-        duration: 200,
-        useNativeDriver: true,
-      }).start();
+      animateSearchBar(-60);
     } else if (currentScroll < lastScroll.current) {
       // moving up show it now
-      Animated.timing(sbPos, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }).start();
+      animateSearchBar(0);
     }
     lastScroll.current = currentScroll; //updating last scroll to current scroll
   };
@@ -90,7 +87,7 @@ export default function Home() {
           [{ nativeEvent: { contentOffset: { y: scrollVal } } }],
           { useNativeDriver: true, listener: handleScroll }
         )}
-        scrollEventThrottle={16}
+        // scrollEventThrottle={16}
       >
         <View style={styles.container}>
           <Animated.View style={[styles.catBox, { opacity }]}>
@@ -176,6 +173,7 @@ export default function Home() {
             <FlatList
               data={products.slice(0, 10)}
               horizontal={true}
+              keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => <ProductCard id={item.id} />}
               ItemSeparatorComponent={() => {
                 return (
@@ -212,6 +210,7 @@ export default function Home() {
               nestedScrollEnabled={true}
               data={products.slice(14, 28)}
               horizontal={true}
+              keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => <ProductCard id={item.id} />}
               ItemSeparatorComponent={() => {
                 return (
@@ -248,6 +247,7 @@ export default function Home() {
               nestedScrollEnabled={true}
               data={products.slice(20, 30)}
               horizontal={true}
+              keyExtractor={(item) => item.id.toString()}
               renderItem={({ item }) => <ProductCard id={item.id} />}
               ItemSeparatorComponent={() => {
                 return (

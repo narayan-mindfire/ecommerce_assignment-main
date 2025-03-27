@@ -99,7 +99,7 @@ export default function AllProducts(): JSX.Element {
           columnWrapperStyle={{ justifyContent: "space-between" }}
           contentContainerStyle={[styles.listContainer, { paddingTop: 60 }]}
           onScroll={handleScroll}
-          scrollEventThrottle={16}
+          // scrollEventThrottle={16}
         />
       </View>
     </SafeAreaView>
