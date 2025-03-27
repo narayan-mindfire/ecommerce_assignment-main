@@ -16,7 +16,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
 import { fetchProducts } from "../redux/slices/ProductSlice";
 import ProductCard from "../components/ProductCard";
-import dark from "../Themes/dark";
 import { useTheme } from "@react-navigation/native";
 import SearchBar from "../components/SearchBar";
 export default function Home() {
@@ -24,56 +23,45 @@ export default function Home() {
   const { products, loading } = useSelector(
     (state: RootState) => state.product
   );
-  const { colors } = useTheme();
+  const { colors, dark } = useTheme();
   useEffect(() => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const lastScrollY = useRef(0);
-  const direction = useRef<"up" | "down">("down");
-
+  const lastScroll = useRef(0);
   const sbPos = useRef(new Animated.Value(0)).current;
-
-  const scrollVal = useState(new Animated.Value(0))[0];
-
+  const scrollVal = useRef(new Animated.Value(0)).current;
   const opacity = scrollVal.interpolate({
-    inputRange: [0, 150],
+    inputRange: [0, 100],
     outputRange: [1, 0],
     extrapolate: "clamp",
   });
-
+  // this is going to run whenever a scroll is detected
   const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-    const currentScrollY = event.nativeEvent.contentOffset.y;
-    if (currentScrollY === 0) {
-      direction.current = "down";
+    const currentScroll = event.nativeEvent.contentOffset.y;
+    if (!currentScroll) {
+      // currently on top
       Animated.timing(sbPos, {
         toValue: 0,
-        duration: 200,
+        duration: 0,
         useNativeDriver: true,
       }).start();
-    } else if (
-      currentScrollY > lastScrollY.current &&
-      direction.current !== "up"
-    ) {
-      direction.current = "up";
+    } else if (currentScroll > lastScroll.current) {
+      // moving down hide the search bar!
       Animated.timing(sbPos, {
         toValue: -60,
         duration: 200,
         useNativeDriver: true,
       }).start();
-    } else if (
-      currentScrollY < lastScrollY.current &&
-      direction.current !== "down"
-    ) {
-      direction.current = "down";
+    } else if (currentScroll < lastScroll.current) {
+      // moving up show it now
       Animated.timing(sbPos, {
         toValue: 0,
         duration: 200,
         useNativeDriver: true,
       }).start();
     }
-
-    lastScrollY.current = currentScrollY;
+    lastScroll.current = currentScroll; //updating last scroll to current scroll
   };
 
   return loading ? (
@@ -181,7 +169,7 @@ export default function Home() {
                 <Text
                   style={{ fontSize: 16, paddingRight: 3, color: colors.text }}
                 >
-                  See All
+                  See New
                 </Text>
               </TouchableOpacity>
             </View>
@@ -258,7 +246,7 @@ export default function Home() {
             </View>
             <FlatList
               nestedScrollEnabled={true}
-              data={products.slice(14, 28)}
+              data={products.slice(20, 30)}
               horizontal={true}
               renderItem={({ item }) => <ProductCard id={item.id} />}
               ItemSeparatorComponent={() => {
@@ -287,9 +275,9 @@ const styles = StyleSheet.create({
     zIndex: -30,
   },
   catBox: {
-    paddingTop: 46,
+    paddingTop: 36,
     paddingHorizontal: 24,
-    marginTop: 24,
+    marginVertical: 24,
     height: 116,
     width: "100%",
   },
@@ -308,8 +296,6 @@ const styles = StyleSheet.create({
   category: {
     width: 56,
     height: 80,
-    // borderColor : 'black',
-    // borderWidth : 3,
     flexDirection: "column",
     alignItems: "center",
   },
@@ -332,10 +318,9 @@ const styles = StyleSheet.create({
   },
   searchBarContainer: {
     position: "absolute",
-    top: 0,
     left: 0,
     right: 0,
-    zIndex: 10, // Bring it to the front
+    zIndex: 10,
     paddingVertical: 10,
     alignItems: "center",
   },
