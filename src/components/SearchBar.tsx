@@ -34,10 +34,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#F4F4F4",
+    opacity: 1,
     borderRadius: 100,
     paddingHorizontal: 10,
     borderColor: "black",
     borderWidth: 2,
+    overflow: "hidden",
   },
   input: {
     flex: 1,

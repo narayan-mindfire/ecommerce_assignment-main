@@ -1,81 +1,92 @@
-import React, { useRef, useState } from "react";
-import { View, Text, Animated, FlatList, StyleSheet } from "react-native";
+import React, { useState } from "react";
+import {
+  View,
+  Platform,
+  UIManager,
+  LayoutAnimation,
+  StyleSheet,
+  Button,
+} from "react-native";
 
-export default function AnimatedFlatListExample() {
-  const scrollY = useState(new Animated.Value(0))[0];
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
-  const searchBarTranslateY = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [0, -50],
-    extrapolate: "clamp",
-  });
-  const opacity = scrollY.interpolate({
-    inputRange: [0, 100],
-    outputRange: [1, 0],
-    extrapolate: "clamp",
-  });
-  const data = Array.from({ length: 30 }, (_, index) => `Item ${index + 1}`);
+const App = () => {
+  const [firstBoxPosition, setFirstBoxPosition] = useState("left");
+  const [secondBoxPosition, setSecondBoxPosition] = useState("left");
+  const [thirdBoxPosition, setThirdBoxPosition] = useState("left");
+
+  const toggleFirstBox = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    setFirstBoxPosition(firstBoxPosition === "left" ? "right" : "left");
+  };
+
+  const toggleSecondBox = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.linear);
+    setSecondBoxPosition(secondBoxPosition === "left" ? "right" : "left");
+  };
+
+  const toggleThirdBox = () => {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+    setThirdBoxPosition(thirdBoxPosition === "left" ? "right" : "left");
+  };
 
   return (
     <View style={styles.container}>
-      {/* Animated Search Bar */}
-      <Animated.View
+      <View style={styles.buttonContainer}>
+        <Button title="EaseInEaseOut" onPress={toggleFirstBox} />
+      </View>
+      <View
         style={[
-          styles.searchBar,
-          { transform: [{ translateY: searchBarTranslateY }], opacity },
+          styles.box,
+          firstBoxPosition === "left" ? null : styles.moveRight,
         ]}
-      >
-        <Text style={styles.searchText}>Search...</Text>
-      </Animated.View>
-
-      {/* Animated FlatList */}
-      <Animated.FlatList
-        data={data}
-        keyExtractor={(item, index) => index.toString()}
-        contentContainerStyle={{ paddingTop: 60 }}
-        renderItem={({ item }) => (
-          <View style={styles.item}>
-            <Text style={styles.itemText}>{item}</Text>
-          </View>
-        )}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }], // Track Y offset
-          { useNativeDriver: true } // Improve performance
-        )}
-        scrollEventThrottle={16}
+      />
+      <View style={styles.buttonContainer}>
+        <Button title="Linear" onPress={toggleSecondBox} />
+      </View>
+      <View
+        style={[
+          styles.box,
+          secondBoxPosition === "left" ? null : styles.moveRight,
+        ]}
+      />
+      <View style={styles.buttonContainer}>
+        <Button title="Spring" onPress={toggleThirdBox} />
+      </View>
+      <View
+        style={[
+          styles.box,
+          thirdBoxPosition === "left" ? null : styles.moveRight,
+        ]}
       />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-  },
-  searchBar: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    height: 50,
-    backgroundColor: "#6200ea",
+    alignItems: "flex-start",
     justifyContent: "center",
-    alignItems: "center",
-    zIndex: -10,
   },
-  searchText: {
-    color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
+  box: {
+    height: 100,
+    width: 100,
+    borderRadius: 5,
+    margin: 8,
+    backgroundColor: "blue",
   },
-  item: {
-    height: 80,
-    justifyContent: "center",
-    alignItems: "center",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+  moveRight: {
+    alignSelf: "flex-end",
   },
-  itemText: {
-    fontSize: 18,
+  buttonContainer: {
+    alignSelf: "center",
   },
 });
+
+export default App;

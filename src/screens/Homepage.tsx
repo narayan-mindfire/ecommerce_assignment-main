@@ -11,6 +11,7 @@ import {
   Animated,
   NativeSyntheticEvent,
   NativeScrollEvent,
+  Easing,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../redux/store";
@@ -18,6 +19,8 @@ import { fetchProducts } from "../redux/slices/ProductSlice";
 import ProductCard from "../components/ProductCard";
 import { useTheme } from "@react-navigation/native";
 import SearchBar from "../components/SearchBar";
+import { InteractionManager } from "react-native";
+
 export default function Home() {
   const dispatch = useDispatch<AppDispatch>();
   const { products, loading } = useSelector(
@@ -25,7 +28,9 @@ export default function Home() {
   );
   const { colors, dark } = useTheme();
   useEffect(() => {
-    dispatch(fetchProducts());
+    InteractionManager.runAfterInteractions(() => {
+      dispatch(fetchProducts());
+    });
   }, []);
 
   const lastScroll = useRef(0);
@@ -37,11 +42,12 @@ export default function Home() {
     extrapolate: "clamp",
   });
 
-  const animateSearchBar = (value: number, duration = 200) => {
+  const animateSearchBar = (value: number, duration = 300) => {
     Animated.timing(sbPos, {
       toValue: value,
       duration,
       useNativeDriver: true,
+      easing: Easing.bezier(0.17, 0.67, 0.83, 0.67),
     }).start();
   };
 
@@ -69,14 +75,14 @@ export default function Home() {
     </SafeAreaView>
   ) : (
     <SafeAreaView style={{ flex: 1, zIndex: -10 }}>
-      <StatusBar
-        backgroundColor={colors.background}
-        barStyle={dark ? "light-content" : "dark-content"}
-      />
+      <StatusBar barStyle={dark ? "light-content" : "dark-content"} />
       <Animated.View
         style={[
           styles.searchBarContainer,
-          { transform: [{ translateY: sbPos }] },
+          {
+            transform: [{ translateY: sbPos }],
+            backgroundColor: colors.background.replace(/[\d\.]+\)$/g, "0.8)"),
+          },
         ]}
       >
         <SearchBar height={40} width={342} />
@@ -318,6 +324,7 @@ const styles = StyleSheet.create({
   },
   searchBarContainer: {
     position: "absolute",
+
     left: 0,
     right: 0,
     zIndex: 10,

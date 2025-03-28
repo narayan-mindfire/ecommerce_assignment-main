@@ -1,8 +1,17 @@
 import { useTheme } from "@react-navigation/native";
-import { StyleSheet, View, Image, Text, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  TouchableOpacity,
+  InteractionManager,
+} from "react-native";
 import { RootState, useAppDispatch, useAppSelector } from "../redux/store";
 import { addToWishlist, removeFromWishlist } from "../redux/slices/wishList";
 import { useNavigation } from "@react-navigation/native";
+import { useEffect, useState } from "react";
+import { navigationRef } from "../navigation/navigationService";
 interface ProductCardProps {
   id: number;
 }
@@ -12,14 +21,19 @@ export default function ProductCard({ id }: ProductCardProps) {
   const product = useAppSelector((state: RootState) =>
     state.product.products.find((p) => p.id === id)
   );
-  const navigation = useNavigation();
   const wishlistItems = useAppSelector(
     (state: RootState) => state.wishlist.entities
   );
   const isWishlisted = !!wishlistItems[id];
   const helpr = () => {
-    navigation.navigate("ProductDetails", { id });
+    navigationRef.navigate("ProductDetails", { id });
   };
+  const [shouldRender, setShouldRender] = useState(false);
+  useEffect(() => {
+    InteractionManager.runAfterInteractions(() => {
+      setShouldRender(true);
+    });
+  }, []);
   const handleWishlistToggle = () => {
     if (product) {
       if (isWishlisted) {
@@ -39,7 +53,7 @@ export default function ProductCard({ id }: ProductCardProps) {
 
   if (!product) return null; // If product not found, return null
 
-  return (
+  return shouldRender ? (
     <TouchableOpacity onPress={helpr}>
       <View style={[styles.wrapper, { backgroundColor: colors.card }]}>
         <TouchableOpacity style={styles.fav} onPress={handleWishlistToggle}>
@@ -68,7 +82,7 @@ export default function ProductCard({ id }: ProductCardProps) {
         </View>
       </View>
     </TouchableOpacity>
-  );
+  ) : null;
 }
 
 const styles = StyleSheet.create({
